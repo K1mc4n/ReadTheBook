@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import './App.css';
+
+const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
 
 function App() {
-  const [files, setFiles] = useState<string[]>([]);
   const [markdownContent, setMarkdownContent] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // Urutan ditentukan secara manual sesuai struktur bab
-    const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
-    setFiles(fileNames);
-
     fileNames.forEach((file) => {
       fetch(`/content/${file}`)
         .then((res) => res.text())
@@ -20,21 +18,28 @@ function App() {
   }, []);
 
   return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">📚 Read The Book</h1>
-      {files.map((file) => (
-        <div key={file} className="mb-10">
-          <h2 className="text-xl font-semibold mb-2">{formatTitle(file)}</h2>
-          <div className="prose prose-lg">
-            <ReactMarkdown>{markdownContent[file]}</ReactMarkdown>
-          </div>
-        </div>
-      ))}
+    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans">
+      {/* Header */}
+      <header className="bg-white shadow px-6 py-4 sticky top-0 z-10">
+        <h1 className="text-2xl font-bold">📚 Read The Book</h1>
+        <p className="text-gray-500">Enjoy structured, chapter-based markdown reading</p>
+      </header>
+
+      {/* Main Content */}
+      <main className="px-4 py-8 max-w-3xl mx-auto">
+        {fileNames.map((file) => (
+          <article key={file} className="mb-12">
+            <h2 className="text-xl font-semibold mb-2">{formatTitle(file)}</h2>
+            <div className="prose prose-lg">
+              <ReactMarkdown>{markdownContent[file]}</ReactMarkdown>
+            </div>
+          </article>
+        ))}
+      </main>
     </div>
   );
 }
 
-// Fungsi opsional untuk ubah nama file jadi judul
 function formatTitle(file: string) {
   const name = file.replace('.md', '');
   return name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1');
