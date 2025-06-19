@@ -7,11 +7,14 @@ function App() {
   const [selectedFile, setSelectedFile] = useState('intro.md');
 
   useEffect(() => {
+    // Menentukan judul tab browser
     document.title = "📚 Farcaster Story";
 
+    // Daftar file markdown yang akan dimuat
     const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
     setFiles(fileNames);
 
+    // Ambil konten markdown dari folder public/content
     fileNames.forEach((file) => {
       fetch(`/content/${file}`)
         .then(res => res.text())
@@ -23,13 +26,16 @@ function App() {
 
   return (
     <div className="p-4 max-w-3xl mx-auto">
+      {/* Judul utama di halaman */}
       <h1 className="text-2xl font-bold mb-4">📚 Farcaster Story</h1>
+
+      {/* Tombol pilihan chapter */}
       <div className="flex flex-wrap gap-2 mb-6">
         {files.map(file => (
           <button
             key={file}
             className={`border px-4 py-2 rounded ${
-              selectedFile === file ? 'bg-black text-white' : ''
+              selectedFile === file ? 'bg-blue-500 text-white' : ''
             }`}
             onClick={() => setSelectedFile(file)}
           >
@@ -37,8 +43,12 @@ function App() {
           </button>
         ))}
       </div>
+
+      {/* Konten Markdown */}
       <div className="prose">
-        <ReactMarkdown>{markdownContent[selectedFile]}</ReactMarkdown>
+        <ReactMarkdown>
+          {markdownContent[selectedFile] || 'Loading...'}
+        </ReactMarkdown>
       </div>
     </div>
   );
