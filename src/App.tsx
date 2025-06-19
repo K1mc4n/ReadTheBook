@@ -1,52 +1,37 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
-
 function App() {
-  const [selectedFile, setSelectedFile] = useState<string | null>(null);
-  const [markdown, setMarkdown] = useState<string>('');
+  const [files, setFiles] = useState<string[]>([]);
+  const [markdownContent, setMarkdownContent] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (selectedFile) {
-      fetch(`/content/${selectedFile}`)
-        .then((res) => res.text())
-        .then(setMarkdown);
-    }
-  }, [selectedFile]);
+    // ✅ Set judul tab browser di sini
+    document.title = "📚 Farcaster Story";
+
+    const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
+    setFiles(fileNames);
+
+    fileNames.forEach((file) => {
+      fetch(`/content/${file}`)
+        .then(res => res.text())
+        .then(text => {
+          setMarkdownContent(prev => ({ ...prev, [file]: text }));
+        });
+    });
+  }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 font-sans px-4 py-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-center">📚 Read The Book</h1>
-
-      {/* Daftar Bab */}
-      <div className="flex flex-wrap gap-3 mb-6 justify-center">
-        {fileNames.map((file) => (
-          <button
-            key={file}
-            onClick={() => setSelectedFile(file)}
-            className={`px-4 py-2 rounded border ${
-              selectedFile === file ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border-blue-600'
-            } hover:bg-blue-500 hover:text-white transition`}
-          >
-            {formatTitle(file)}
-          </button>
-        ))}
-      </div>
-
-      {/* Konten Markdown */}
-      {selectedFile && (
-        <div className="prose prose-lg bg-white p-6 rounded shadow">
-          <ReactMarkdown>{markdown}</ReactMarkdown>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">📚 Read The Book</h1>
+      {files.map(file => (
+        <div key={file} className="mb-8">
+          <h2 className="text-xl font-semibold">{file}</h2>
+          <ReactMarkdown>{markdownContent[file]}</ReactMarkdown>
         </div>
-      )}
+      ))}
     </div>
   );
-}
-
-function formatTitle(file: string) {
-  const name = file.replace('.md', '');
-  return name.charAt(0).toUpperCase() + name.slice(1).replace(/([A-Z])/g, ' $1');
 }
 
 export default App;
