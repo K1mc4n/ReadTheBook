@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 function App() {
@@ -6,7 +6,7 @@ function App() {
   const [markdownContent, setMarkdownContent] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    // ✅ Set judul tab browser di sini
+    // ✅ Set judul tab browser
     document.title = "📚 Farcaster Story";
 
     const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
