@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://read-the-book.vercel.app/$1",
+      "permanent": true
+    }
+  ]
+}
