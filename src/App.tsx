@@ -1,43 +1,48 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 
 function App() {
-  const [files] = useState(['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md']);
-  const [activeFile, setActiveFile] = useState('intro.md');
-  const [markdownContent, setMarkdownContent] = useState('');
+  const [files, setFiles] = useState<string[]>([]);
+  const [markdownContent, setMarkdownContent] = useState<Record<string, string>>({});
+  const [selectedFile, setSelectedFile] = useState('intro.md');
 
-  useEffect(() => {
-    document.title = "📚 Farcaster Story";
-    fetch(`/content/${activeFile}`)
-      .then(res => res.text())
-      .then(setMarkdownContent);
-  }, [activeFile]);
+  useEffect(() => {
+    // ✅ Set judul tab browser
+    document.title = "📚 Farcaster Story";
 
-  return (
-    <div className="p-4 max-w-3xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 flex items-center gap-2">
-        <span>📚</span> Read The Book
-      </h1>
+    const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
+    setFiles(fileNames);
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        {files.map(file => (
-          <button
-            key={file}
-            className={`border px-3 py-1 rounded ${
-              file === activeFile ? 'bg-black text-white' : 'bg-white text-black'
-            }`}
-            onClick={() => setActiveFile(file)}
-          >
-            {file.replace('.md', '')}
-          </button>
-        ))}
-      </div>
+    fileNames.forEach((file) => {
+      fetch(`/content/${file}`)
+        .then(res => res.text())
+        .then(text => {
+          setMarkdownContent(prev => ({ ...prev, [file]: text }));
+        });
+    });
+  }, []);
 
-      <div className="prose max-w-none">
-        <ReactMarkdown>{markdownContent}</ReactMarkdown>
-      </div>
-    </div>
-  );
+  return (
+    <div className="p-4 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">📚 Farcaster Story</h1>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {files.map(file => (
+          <button
+            key={file}
+            className={`border px-4 py-2 rounded ${
+              selectedFile === file ? 'bg-black text-white' : ''
+            }`}
+            onClick={() => setSelectedFile(file)}
+          >
+            {file.replace('.md', '')}
+          </button>
+        ))}
+      </div>
+      <div className="prose">
+        <ReactMarkdown>{markdownContent[selectedFile]}</ReactMarkdown>
+      </div>
+    </div>
+  );
 }
 
 export default App;
