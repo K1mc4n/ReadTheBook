@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
-import './App.css';
 
 const fileNames = ['intro.md', 'chapter1.md', 'chapter2.md', 'JakePhilosophy.md'];
 
