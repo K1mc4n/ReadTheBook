@@ -1,9 +1,21 @@
 {
-  "redirects": [
+  "version": 2,
+  "builds": [
     {
-      "source": "/(.*)",
-      "destination": "https://read-the-book.vercel.app/$1",
-      "permanent": true
+      "src": "dist/index.html",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "headers": {
+        "Cache-Control": "public, max-age=31536000, immutable"
+      }
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
